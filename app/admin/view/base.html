@@ -22,6 +22,12 @@
     <![endif]-->
     <!-- Google Font -->
     {load href="/static/admin/local/css/google_fonts.css" /}
+    <style>
+        ul.pagination{
+            float: right!important;
+            margin:0px;
+        }
+    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -149,7 +155,7 @@
                             <!-- The user image in the navbar-->
                             <img src="/static/admin/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
                             <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                            <span class="hidden-xs">张无忌</span>
+                            <span class="hidden-xs">{$Request.session.adminuser.nickname}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- The user image in the menu -->
@@ -157,7 +163,7 @@
                                 <img src="/static/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                                 <p>
-                                    张无忌 - 管理员
+                                    {$Request.session.adminuser.nickname} - 管理员
                                     <small>2018年08月16日加入</small>
                                 </p>
                             </li>
@@ -190,7 +196,7 @@
                     <img src="/static/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p>张无忌 . 管理员</p>
+                    <p>{$Request.session.adminuser.nickname} . 管理员</p>
                     <!-- Status -->
                     <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
                 </div>
@@ -200,23 +206,23 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header">主要导航</li>
                 <!-- 导航列表，你可以自行更改图标 -->
-                <li class="active"><a href="admin.html"><i class="fa fa-home"></i> <span>首页</span></a></li>
+                <li class="active"><a href="{:url('/admin')}"><i class="fa fa-home"></i> <span>首页</span></a></li>
 
-                <li><a href="member.html"><i class="fa fa-users"></i> <span>会员管理</span></a></li>
-                <li><a href="shop.html"><i class="fa fa-sitemap"></i> <span>店铺管理</span></a></li>
+                <li><a href="{:url('/admin/member')}"><i class="fa fa-users"></i> <span>会员管理</span></a></li>
+                <li><a href="{:url('/admin/shop')}"><i class="fa fa-sitemap"></i> <span>店铺管理</span></a></li>
                 <li class="treeview">
-                    <a href="category.html"><i class="fa fa-cutlery"></i> <span>菜品管理</span>
+                    <a href="{:url('/admin/category')}"><i class="fa fa-cutlery"></i> <span>菜品管理</span>
                         <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="category.html"> <i class="fa fa-circle-o"></i> 菜品分类</a></li>
-                        <li><a href="product.html"> <i class="fa fa-circle-o"></i> 菜品信息</a></li>
+                        <li><a href="{:url('/admin/category')}"> <i class="fa fa-circle-o"></i> 菜品分类</a></li>
+                        <li><a href="{:url('/admin/product')}"> <i class="fa fa-circle-o"></i> 菜品信息</a></li>
                     </ul>
                 </li>
                 <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> <span>订单管理</span></a></li>
-                <li><a href="#"><i class="fa fa-user"></i> <span>账号管理</span></a></li>
+                <li><a href="{:url('/admin/user')}"><i class="fa fa-user"></i> <span>账号管理</span></a></li>
                 <li><a href="#"><i class="fa fa-key"></i> <span>权限管理</span></a></li>
                 <li><a href="#"><i class="fa fa-gear"></i> <span>系统配置</span></a></li>
                 <li><a href="#"><i class="fa fa-unlock-alt"></i> <span>认证体系</span></a></li>
@@ -279,18 +285,42 @@
 <!-- 此处可以添加SimLoopl和FastClick插件，用于增强用户体验。 -->
 
 <script type="text/javascript">
-    /*
-    Modal.confirm({
-        msg: "确定要删除吗？",
-        title: ' 信息提示',
-        btnok: '确定',
-        btncl:'取消'
-    }).on(function (e){
-        if(e){
-            Modal.alert({msg: "成功删除",title: ' 信息提示',btnok: '确定',btncl:'取消'});
-        }
-    });
-    */
+    function doDel(url_data){
+        Modal.confirm({
+            msg: "确定要删除吗？",
+            title: ' 信息提示',
+            btnok: '确定',
+            btncl:'取消'
+        }).on(function (e){
+            if(e){
+                $.ajax({
+                    //请求方式
+                    type: 'delete',
+                    //请求地址
+                    url: url_data,
+                    //数据，json字符串
+                    dataType: 'json',
+                    //请求成功
+                    success: function(result){
+                        if(result.error == "yes"){
+                            window.location.reload();
+                        }else{
+                            Modal.alert({msg: "成功删除",title: ' 信息提示',btnok: '确定',btncl:'取消'});
+                        }
+                    },
+                    //请求失败，包含具体的错误信息
+                    error: function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
+                    }
+                })
+
+            }
+        });
+    }
 </script>
+{block name="loadjavascript"}
+<!-- 用于子页面添加javascript脚本程序 -->
+{/block}
 </body>
 </html>

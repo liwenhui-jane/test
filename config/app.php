@@ -16,7 +16,10 @@ return [
     'default_app'      => 'index',
     // 默认时区
     'default_timezone' => 'Asia/Shanghai',
-
+    // 开启应用快速访问
+    'app_express'    =>    true,
+    // 默认应用
+    'default_app'    =>    'home',
     // 应用映射（自动多应用模式有效）
     'app_map'          => [],
     // 域名绑定（自动多应用模式有效）

@@ -6,7 +6,8 @@ namespace app;
 use think\App;
 use think\exception\ValidateException;
 use think\Validate;
-
+use think\facade\View;
+use think\exception\HttpResponseException;
 /**
  * 控制器基础类
  */
@@ -34,7 +35,7 @@ abstract class BaseController
      * 控制器中间件
      * @var array
      */
-    protected $middleware = [];
+    protected $middleware = [\app\middleware\Check::class];
 
     /**
      * 构造方法
@@ -91,4 +92,55 @@ abstract class BaseController
         return $v->failException(true)->check($data);
     }
 
+    /**
+     * 操作成功提示方法
+     */
+    public function success($msg = '操作成功',$jump_to_url = null,$code = 200,$params = [])
+    {
+
+        if(is_null($jump_to_url)){
+            $jump_to_url = \request()->server('HTTP_REFERER');
+        }else{
+            $jump_to_url = url($jump_to_url);
+        }
+
+        $data = [
+            'msg'=>$msg,
+            'jump_to_url'=>$jump_to_url,
+            'params'=>$params
+        ];
+
+        if(\request()->isAjax()){
+            throw new HttpResponseException(json_message($data,0,$msg));
+        }
+
+        View::assign($data);
+        throw new HttpResponseException(response(View::fetch('common@tpl/success'),$code));
+    }
+
+    /**
+     * 操作失败提示方法
+     */
+    public function error($msg = '操作失败',$jump_to_url = null,$code = 200,$params = [])
+    {
+
+        if(is_null($jump_to_url)){
+            $jump_to_url = \request()->server('HTTP_REFERER');
+        }else{
+            $jump_to_url = url($jump_to_url);
+        }
+
+        $data = [
+            'msg'=>$msg,
+            'jump_to_url'=>$jump_to_url,
+            'params'=>$params
+        ];
+
+        if(\request()->isAjax()){
+            throw new HttpResponseException(json_message($data,0,$msg));
+        }
+
+        View::assign($data);
+        throw new HttpResponseException(response(View::fetch('common@tpl/error'),$code));
+    }
 }

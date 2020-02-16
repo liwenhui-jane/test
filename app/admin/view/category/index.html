@@ -1,0 +1,90 @@
+{extend name="base" /}
+{block name="main"}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            菜品管理
+            <small>订餐系统后台管理</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{:url('/admin')}"><i class="fa fa-dashboard"></i> 首页</a></li>
+            <li class="active">菜品管理</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">菜品分类信息表</h3>
+
+                        <div class="box-tools">
+                            <form action="{:url('category/index')}" method="get">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="keyword" class="form-control pull-right" placeholder="分类名称">
+
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>ID</th>
+                                <th>店铺名称</th>
+                                <th>分类名称</th>
+                                <th>当前状态</th>
+                                <th>添加时间</th>
+                                <th>修改时间</th>
+                                <th>操作</th>
+                            </tr>
+                            {foreach $volist as $category}
+                            <tr>
+                                <td>{$category.id}</td>
+                                <td>{$category.shop}</td>
+                                <td>{$category.name}</td>
+                                <td>
+                                    {if $category.status == 1}
+                                    <span class="label label-success">正常</span>
+                                    {elseif $category.status == 9}
+                                    <span class="label label-danger">删除</span>
+                                    {else /}<span class="label label-danger">其他</span>
+                                    {/if}
+                                </td>
+                                <td>{$category.create_at}</td>
+                                <td>{$category.update_at}</td>
+                                <td>
+                                    <a role="button" href="{:url('category/edit',['id'=>$category.id])}" class="btn btn-success btn-xs">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 编辑</a>
+                                    <button type="button" onclick="doDel('{:url('category/delete',['id'=>$category.id])}')" class="btn btn-danger btn-xs">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除</button>
+                                    <button type="button" class="btn btn-warning btn-xs">
+                                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> 查看订单</button>
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <a role="button" href="{:url('category/create')}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加菜品分类信息</a>
+                        {$page|raw}
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+    </section>
+    <!-- /.content -->
+</div>
+{/block}
